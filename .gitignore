@@ -1,0 +1,4 @@
+/runtime
+/application/database.php
+.vscode
+/public/upload/*
