@@ -1,0 +1,132 @@
+{include file="layout/head"/}
+
+<body>
+	<div class="page-container">
+		<form class="form form-horizontal">
+			<div id="tab-category" class="HuiTab">
+				<div class="row cl">
+					<label class="form-label col-xs-4 col-sm-3">
+						<span class="c-red">*</span>
+						上级菜单：</label>
+					<div class="formControls col-xs-8 col-sm-9">
+						<span class="select-box">
+							<select class="select" id="parent_id" name="parent_id">
+								{volist name="menu" id="vo"}
+								 	<option value="{$vo.id}" {if condition="isset($info) and $info.parent_id eq $vo.id"} selected {/if}>{$vo.name}</option>
+								{/volist}
+							</select>
+						</span>
+					</div>
+					<div class="col-3">
+					</div>
+				</div>
+				<div class="row cl">
+					<label class="form-label col-xs-4 col-sm-3">
+						<span class="c-red">*</span>
+						分类名称：</label>
+					<div class="formControls col-xs-8 col-sm-9">
+						<input type="text" class="input-text" {if condition="isset($info)"} value="{$info.name}" {/if} placeholder="如：菜单管理" id="name" name="name">
+					</div>
+					<div class="col-3">
+					</div>
+				</div>
+				<div class="row cl">
+					<label class="form-label col-xs-4 col-sm-3">
+						<span class="c-red">*</span>
+						菜单地址：</label>
+					<div class="formControls col-xs-8 col-sm-9">
+						<input type="text" class="input-text" {if condition="isset($info)"} value="{$info.url}" {/if} placeholder="如：admin/system/menu" id="url" name="url">
+						<p style="color:red;">顶级菜单不需要设置地址</p>
+					</div>
+					<div class="col-3">
+					</div>
+				</div>
+				<div class="row cl">
+					<label class="form-label col-xs-4 col-sm-3">菜单图标：</label>
+					<div class="formControls col-xs-8 col-sm-9">
+						<input type="text" class="input-text" {if condition="isset($info)"} value="{$info.icon}" {/if} placeholder="如：xe625" id="icon" name="icon">
+						<p>请 <a style="color:blue;" href="http://www.h-ui.net/Hui-3.7-Hui-iconfont.shtml"
+							target="_bank">打开网站</a>，挑选合适的图标。如：xe625：<i class="Hui-iconfont">&#xe625;</i></p>
+					</div>
+					<div class="col-3">
+					</div>
+				</div>
+				<div class="row cl">
+					<label class="form-label col-xs-4 col-sm-3">排序：</label>
+					<div class="formControls col-xs-8 col-sm-9">
+						<input type="text" class="input-text" {if condition="isset($info)"} value="{$info.sort}" {/if} placeholder="" id="sort" name="sort">
+					</div>
+					<div class="col-3">
+					</div>
+				</div>
+			</div>
+			<div class="row cl">
+				<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>显示：</label>
+				<div class="formControls col-xs-8 col-sm-9 skin-minimal">
+					<div class="radio-box">
+						<input name="is_show" type="radio" id="sex-1" value="1" {if condition="(isset($info) and $info.is_show eq 1) or !isset($info)"} checked {/if} >
+						<label for="sex-1">显示</label>
+					</div>
+					<div class="radio-box">
+						<input type="radio" id="sex-2" value="0" name="is_show" {if condition="isset($info) and $info.is_show eq 0"} checked {/if}>
+						<label for="sex-2">隐藏</label>
+					</div>
+				</div>
+			</div>
+			<div class="row cl">
+				<div class="col-9 col-offset-3">
+					<p class="btn btn-primary radius" onclick="submit()">提交</p>
+				</div>
+			</div>
+		</form>
+	</div>
+	{include file="layout/footer"/}
+
+	<!--请在下方写此页面业务相关的脚本-->
+	<!-- <script type="text/javascript" src="__ADMIN__/lib/My97DatePicker/4.8/WdatePicker.js"></script>
+	<script type="text/javascript" src="__ADMIN__/lib/jquery.validation/1.14.0/jquery.validate.js"></script>
+	<script type="text/javascript" src="__ADMIN__/lib/jquery.validation/1.14.0/validate-methods.js"></script> -->
+	<!-- <script type="text/javascript" src="__ADMIN__/lib/jquery.validation/1.14.0/messages_zh.js"></script> -->
+	<script>
+		function submit(){
+			var type = '{$type}';
+			var id = parseInt('{if condition="isset($info)"}{$info.id}{else /}0{/if}');
+			var parent_id = $('#parent_id option:selected').val();
+			var name = $('#name').val();
+			var url = $('#url').val();
+			var icon = $('#icon').val();
+			var sort = $('#sort').val();
+			var is_show = $('input[name=is_show]:checked').val();
+			console.log(parent_id)
+			if (!name) {
+				layer.msg("请填写菜单名称！");
+				return false;
+			}
+			if (parent_id > 0 && url == '') {
+				layer.msg("请填写菜单地址！");
+				return false;
+			}
+
+			$.ajax({
+				type: 'POST',
+				url: '/admin/system/menu_handle',
+				data: {'id':id,'parent_id':parent_id,'name':name,'url':url,'icon':icon,'sort':sort,'is_show':is_show,'type':type},
+				success: function(data){
+					if (data.status == 1){
+						layer.msg(data.msg,{'icon': 1,'time': 1500},function () {
+							parent.location.reload();
+						});
+					} else {
+						layer.msg(data.msg,{'icon': 0,'time': 1500});
+					}
+				},
+				error: function(){
+					layer.alert("系统繁忙！请稍候再试！");
+				}
+			});
+		}
+	</script>
+	<!--/请在上方写此页面业务相关的脚本-->
+</body>
+
+</html>
