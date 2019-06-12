@@ -56,7 +56,7 @@ class System extends Base
         $data['icon'] = input('icon/s');
         $data['sort'] = input('sort/d',0);
         $data['is_show'] = input('is_show/d',1);
-        $id = input('id/d',0);
+        $id = input('id');
         $type = input('type/s');
         
         $result = array('status'=>0,'msg'=>"没有内容！");
@@ -103,9 +103,9 @@ class System extends Base
             }
         }
         //删除菜单
-        if (($type == 'del') && ($id > 0)) {
-            // $bool = $menu->delete($id);
-            $bool = true;
+        if (($type == 'del') && $id) {
+            $id = array_filter(explode(',',$id));
+            $bool = $menu->destroy($id);
             if ($bool) {
                 $result['status'] = 1;
                 $result['msg'] = "删除成功！";
