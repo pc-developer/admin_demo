@@ -11,14 +11,45 @@ use app\admin\model\Menu;
 
 class System extends Base
 {
+    public function index(){}
+    
     # 菜单列表
     public function menu()
     {
-        $menu = Db::name('menu')->select();
-        $count = Db::name('menu')->count();
+        $name = trim(input('name'));
+        $where['id'] = ['>',0];
+        
+        if ($name) {
+            $where['name'] = ['like',"%$name%"];
+        }
+        
+        $menu = Db::name('menu')->where($where)->whereOr('id','in',function($query) use ($where){
+            $query->name('menu')->where($where)->where('parent_id','>',0)->field('parent_id');
+        })->order('sort desc,id asc')->select();
+        
+        $count = Db::name('menu')->where($where)->count();
+        
+        if ($menu) {
+            $list = array();
+            foreach ($menu as $k1 => $v1) {
+                if ($v1['parent_id'] == 0) {
+                    array_push($list,$menu[$k1]);
+                    unset($menu[$k1]);
+                    if(is_array($menu)){
+                        foreach($menu as $k2 => $v2){
+                            if($v2['parent_id'] == $v1['id']){
+                                array_push($list,$menu[$k2]);
+                                unset($menu[$k2]);
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
+        $this->assign('name',$name);
         $this->assign('count',$count);
-        $this->assign('menu',$menu);
+        $this->assign('list',$list);
         return $this->fetch();
     }
 
@@ -105,12 +136,33 @@ class System extends Base
         //删除菜单
         if (($type == 'del') && $id) {
             $id = array_filter(explode(',',$id));
-            $bool = $menu->destroy($id);
+            $bool = $menu->where('id','in',$id)->whereOr('parent_id','in',$id)->delete();
+            
             if ($bool) {
                 $result['status'] = 1;
                 $result['msg'] = "删除成功！";
             } else {
                 $result['msg'] = "删除失败！";
+            }
+        }
+        
+        return json($result);
+    }
+
+    # 菜单状态修改
+    public function menu_is_show(){
+        $menu_id = input('menu_id/d',0);
+        $is_show = input('is_show/d',1);
+        $result = array('status'=>0);
+        if ($menu_id > 0) {
+            //隐藏后，子菜单也会隐藏，显示只显示选中菜单
+            $where = array('id'=>$menu_id);
+            if ($is_show == 0) {
+                $where = ['id|parent_id'=>$menu_id];
+            }
+            $bool = Db::name('menu')->where($where)->update(['is_show'=>$is_show]);
+            if ($bool) {
+                $result['status'] = 1;
             }
         }
         
