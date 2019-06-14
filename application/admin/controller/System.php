@@ -11,7 +11,10 @@ use app\admin\model\Menu;
 
 class System extends Base
 {
-    public function index(){}
+    public function index()
+    {
+        $this->redirect('/admin/system/menu');
+    }
     
     # 菜单列表
     public function menu()
@@ -57,7 +60,7 @@ class System extends Base
     public function add_menu()
     {
         $menu_id = input('id/d',0);
-        $type = input('type/s','add');
+        $act = input('act/s','add');
 
         if ($menu_id > 0) {
             $info = Db::name('menu')->where('id',$menu_id)->find();
@@ -72,7 +75,7 @@ class System extends Base
             }
         }
 
-        $this->assign('type',$type);
+        $this->assign('act',$act);
         $this->assign('menu',$menu);
         
         return $this->fetch();
@@ -88,15 +91,15 @@ class System extends Base
         $data['sort'] = input('sort/d',0);
         $data['is_show'] = input('is_show/d',1);
         $id = input('id');
-        $type = input('type/s');
+        $act = input('act/s');
         
         $result = array('status'=>0,'msg'=>"没有内容！");
 
-        if (!$data['name'] && ($type != 'del')) {
+        if (!$data['name'] && ($act != 'del')) {
             $result['msg'] = "请填写菜单名称！";
             return json($result);
         }
-        if (($data['parent_id'] > 0) && !$data['url'] && ($type != 'del')) {
+        if (($data['parent_id'] > 0) && !$data['url'] && ($act != 'del')) {
             $result['msg'] = "请填写菜单地址！";
             return json($result);
         }
@@ -113,7 +116,7 @@ class System extends Base
         }
         
         //新增菜单
-        if ($type == 'add') {
+        if ($act == 'add') {
             $bool = $menu->save($data);
             if ($bool) {
                 $result['status'] = 1;
@@ -123,7 +126,7 @@ class System extends Base
             }
         }
         //更改菜单
-        if ($type == 'edit') {
+        if ($act == 'edit') {
             $data['id'] = $id;
             $bool = $menu->isUpdate(true)->save($data);
             if ($bool) {
@@ -134,7 +137,7 @@ class System extends Base
             }
         }
         //删除菜单
-        if (($type == 'del') && $id) {
+        if (($act == 'del') && $id) {
             $id = array_filter(explode(',',$id));
             $bool = $menu->where('id','in',$id)->whereOr('parent_id','in',$id)->delete();
             

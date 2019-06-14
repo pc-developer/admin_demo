@@ -22,7 +22,7 @@
 			<span class="l">
 				<a href="javascript:;" onclick="datadel()" class="btn btn-danger radius"><i
 						class="Hui-iconfont">&#xe6e2;</i> 批量删除</a>
-				<a class="btn btn-primary radius" onclick="menu_add('添加菜单','/admin/system/add_menu?type=add')"
+				<a class="btn btn-primary radius" onclick="menu_add('添加菜单','/admin/system/add_menu?act=add')"
 					href="javascript:;"><i class="Hui-iconfont">&#xe600;</i> 添加菜单</a>
 			</span>
 			<span class="r">共有数据：<strong>{$count}</strong> 条</span>
@@ -73,7 +73,7 @@
 								</a>
 							{/if}
 							<a title="编辑" href="javascript:;"
-								onclick="menu_edit('菜单编辑','/admin/system/add_menu?type=edit&id={$vo.id}')"
+								onclick="menu_edit('菜单编辑','/admin/system/add_menu?act=edit&id={$vo.id}')"
 								style="text-decoration:none"><i class="Hui-iconfont">&#xe6df;</i></a>
 							<a title="删除" href="javascript:;" onclick="menu_del(this,'{$vo.id}')" class="ml-5"
 								style="text-decoration:none"><i class="Hui-iconfont">&#xe6e2;</i></a>
@@ -120,7 +120,7 @@
 				$.ajax({
 					type: 'POST',
 					url: '/admin/system/menu_handle',
-					data: { 'id': id, 'type': 'del' },
+					data: { 'id': id, 'act': 'del' },
 					dataType: 'json',
 					success: function (data) {
 						if (data.status == 1) {
@@ -148,13 +148,11 @@
 						// $(obj).parents("tr").find(".td-manage").prepend('<a onClick="menu_start(this)" href="javascript:;" title="隐藏" style="text-decoration:none"><i class="Hui-iconfont">&#xe615;</i></a>');
 						// $(obj).parents("tr").find(".td-status").html('<span class="label label-default radius">隐藏</span>');
 						// $(obj).remove();
-						layer.msg('已隐藏！', { 'icon': 6, 'time': 1000, 'title': "提示信息"}, function () {
+						layer.msg('已隐藏！', { 'icon': 5, 'time': 1000, 'title': "提示信息"}, function () {
 							location.reload();
 						})
 					} else {
-						layer.msg('操作失败！', { 'icon': 5, 'time': 1000, 'title': "提示信息" }, function () {
-							window.location();
-						})
+						layer.msg('操作失败！', { 'icon': 0, 'time': 1000, 'title': "提示信息" });
 					}
 				});
 
@@ -171,18 +169,13 @@
 						$(obj).parents("tr").find(".td-manage").prepend('<a onClick="menu_stop(this)" href="javascript:;" title="显示" style="text-decoration:none"><i class="Hui-iconfont">&#xe631;</i></a>');
 						$(obj).parents("tr").find(".td-status").html('<span class="label label-success radius">正常</span>');
 						$(obj).remove();
-						layer.msg('已显示！', { 'icon': 6, 'time': 1000, 'title': "提示信息" }, function () {
-							window.location();
-						})
+						layer.msg('已显示！', { 'icon': 6, 'time': 1000, 'title': "提示信息" });
 					} else {
-						layer.msg('操作失败！', { 'icon': 5, 'time': 1000, 'title': "提示信息" }, function () {
-							window.location();
-						})
+						layer.msg('操作失败！', { 'icon': 0, 'time': 1000, 'title': "提示信息" });
 					}
 				});
 			});
 		}
 	</script>
 </body>
-
 </html>

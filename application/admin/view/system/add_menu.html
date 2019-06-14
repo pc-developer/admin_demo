@@ -35,7 +35,7 @@
 						<span class="c-red">*</span>
 						菜单地址：</label>
 					<div class="formControls col-xs-8 col-sm-9">
-						<input type="text" class="input-text" {if condition="isset($info)"} value="{$info.url}" {/if} placeholder="如：admin/system/menu" id="url" name="url">
+						<input type="text" class="input-text" {if condition="isset($info)"} value="{$info.url}" {/if} placeholder="如：/admin/system/menu" id="url" name="url">
 						<p style="color:red;">顶级菜单不需要设置地址</p>
 					</div>
 					<div class="col-3">
@@ -85,7 +85,7 @@
 	<!--请在下方写此页面业务相关的脚本-->
 	<script>
 		function submit(){
-			var type = '{$type}';
+			var act = '{$act}';
 			var id = parseInt('{if condition="isset($info)"}{$info.id}{else /}0{/if}');
 			var parent_id = $('#parent_id option:selected').val();
 			var name = $('#name').val();
@@ -106,7 +106,7 @@
 			$.ajax({
 				type: 'POST',
 				url: '/admin/system/menu_handle',
-				data: {'id':id,'parent_id':parent_id,'name':name,'url':url,'icon':icon,'sort':sort,'is_show':is_show,'type':type},
+				data: {'id':id,'parent_id':parent_id,'name':name,'url':url,'icon':icon,'sort':sort,'is_show':is_show,'act':act},
 				success: function(data){
 					if (data.status == 1){
 						layer.msg(data.msg,{'icon': 1,'time': 1500},function () {

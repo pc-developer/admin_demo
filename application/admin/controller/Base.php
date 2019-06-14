@@ -13,11 +13,11 @@ class Base extends Controller
 {
     public function _initialize()
     {
-        // $this->admin = Session::get('admin');
-        // if (!$this->admin) {
-        //     Session::clear();
-        //     $this->redirect('Login/login');
-        // }
+        if (!session('?admin')) {
+            Session::clear();
+            session('admin','sf234');
+            $this->redirect('admin/login/index');
+        }
         $global_menu_list = $this->get_menu();
         $this->assign('global_menu',$global_menu_list);
     }
