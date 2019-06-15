@@ -15,7 +15,7 @@ class Admin extends Base
     public function index()
     {
         $name = input('admin_name/s');
-        $where = array();
+        $where['id'] = ['>',0];
 
         if ($name) {
             $where['name'] = ['like',"%$name%"];
@@ -155,4 +155,108 @@ class Admin extends Base
         return json($result);
     }
 
+    # 分组列表
+    public function group_list()
+    {
+        $name = input('name');
+
+        $where['id'] = ['>',0];
+        if ($name) {
+            $where['name'] = ['like',"%$name%"];
+        }
+        
+        $list = Db::name('admin_group')->where($where)->select();
+        $count = Db::name('admin_group')->where($where)->count();
+
+        $this->assign('count',$count);
+        $this->assign('name',$name);
+        $this->assign('list',$list);
+
+        return $this->fetch();
+    }
+
+    # 添加分组
+    public function group_add()
+    {
+        // $group_id = input('id/d');
+        $act = input('act/s');
+
+        // if (($act == 'edit') && !$group_id) {
+        //     return '<p style="text-align: center; margin-top: 3em; color: red; font-size: 2.5rem;">找不到该分组信息</p>';
+        // }
+
+        $menu = Db::name('menu')->order('sort asc,id asc')->field('id,name,parent_id')->select();
+
+        $menu_list = array();
+        
+        foreach ($menu as $k1 => $v1) {
+            if ($v1['parent_id'] == 0) {
+                $menu_list[$v1['id']] = $v1;
+                unset($menu[$k1]);
+
+                if (is_array($menu)) {
+                    foreach ($menu as $k2 => $v2) {
+                        if ($v2['parent_id'] == $v1['id']) {
+                            $menu_list[$v1['id']]['next'][$v2['id']] = $v2;
+                            unset($menu[$k2]);
+                        }
+                    }
+                }
+            }
+        }
+        
+        $this->assign('act',$act);
+        $this->assign('menu_list',$menu_list);
+
+        return $this->fetch();
+    }
+
+    # 分组增删改
+    public function group_handle()
+    {
+        $data = $_POST;
+        $result = array('status'=>0,'msg'=>"参数错误！");
+        
+        if ($data) {
+            $name = trim($data['name']);
+            $note = trim($data['note']);
+            $act = $data['act'];
+            unset($data['name']);
+            unset($data['note']);
+            unset($data['act']);
+            $data_keys = array_keys($data);
+            $data_keys = json_encode($data_keys);
+
+            if (!$name) {
+                $result['msg'] = "分组名称必填！";
+                return json($result);
+            }
+            $time = time();
+
+            if ($act == 'add') {
+                $bool = Db::name('admin_group')->insert(['name'=>$name,'jurisdiction'=>$data_keys,'create_time'=>$time,'update_time'=>$time,'note'=>$note]);
+
+                if ($bool) {
+                    $result['status'] = 1;
+                    $result['msg'] = "操作成功！";
+                } else {
+                    $result['msg'] = "操作失败！";
+                }
+            }
+            // $permissions = array();
+            
+            // foreach ($data_keys as $k1 => $v1) {
+            //     $temp = explode('_',$v1);
+                
+            //     if (is_array($temp)) {
+                    
+            //         foreach ($temp as $k2 => $v2) {
+            //             $permissions[$v2] = '';
+            //         }
+            //     }
+            // }
+        }
+        
+        return json($result);
+    }
 }
