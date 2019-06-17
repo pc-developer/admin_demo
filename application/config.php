@@ -208,6 +208,8 @@ return [
         'type'           => '',
         // 是否自动开启 SESSION
         'auto_start'     => true,
+        // 过期时间
+        'expire'         => 1800,
     ],
 
     // +----------------------------------------------------------------------
@@ -236,4 +238,28 @@ return [
         'var_page'  => 'page',
         'list_rows' => 15,
     ],
+
+    //验证码
+    'captcha'               => [
+        //字符集和
+        'codeSet'   => 'abcdefghijkmnpqrstuvwyzABCDEFGHIJKLMNPQRSTUVWYZ23456789',
+        //过期时间
+        'expire'    => 60,
+        //背景图
+        'useImgBg'  => false,
+        //字体大小
+        'fontSize'  => 18,
+        //混淆曲线
+        'useCurve'  => false,
+        //添加杂点
+        'useNoise'  => true,
+        //图片高
+        'imageH'    => 40,
+        //图片宽
+        'imageW'    => 200,
+        //位数
+        'length'    => 6,
+        //验证成功后是否重置
+        'reset'     => true,
+    ]
 ];
