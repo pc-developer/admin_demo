@@ -25,6 +25,7 @@ class Login extends Controller
         }
         
         $this->redirect('admin/login/login');
+        exit();
     }
 
     public function login()
@@ -92,6 +93,6 @@ class Login extends Controller
     public function logout()
     {
         session(null);
-        return redirect('admin/login/index');
+        return redirect('admin/login/login');
     }
 }
