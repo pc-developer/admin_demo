@@ -7,7 +7,7 @@
       cursor: pointer;
     }
   </style>
-<body>
+<body onkeydown="key_down()">
   <input type="hidden" id="TenantId" name="TenantId" value="" />
   <div class="header"></div>
   <div class="loginWraper">
@@ -54,6 +54,13 @@
   <div class="footer">Copyright 你的公司名称 by H-ui.admin v3.1</div>
   {include file="layout/footer"/}
   <script>
+    //按enter执行
+    function key_down(){
+      if (event.keyCode == 13) {
+        login();
+      }
+    }
+
     function login(){
       var username = $.trim($('input[name="username"]').val());
       var password = $('input[name="password"]').val();

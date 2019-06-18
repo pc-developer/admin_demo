@@ -35,7 +35,8 @@ class Base extends Controller
         session('admin_id',$this->id);
 
         $global_menu_list = $this->get_menu();
-
+        
+        $this->assign('admin_identity',$this->admin);
         $this->assign('global_menu',$global_menu_list);
     }
 

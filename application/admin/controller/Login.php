@@ -68,11 +68,13 @@ class Login extends Controller
 
         if ($admin_info) {
             $password = get_encrypt($password);
-            if ($admin_info['is_lock'] == 1) {
-                $result['msg'] = "该用户已被禁用！";
-                return json($result);
-            }
+            
             if ($password == $admin_info['password']) {
+                if ($admin_info['is_lock'] == 1) {
+                    $result['msg'] = "该用户已被禁用！";
+                    return json($result);
+                }
+                
                 Db::name('admin')->where('id',$admin_info['id'])->update(['last_login_ip'=>$this->ip]);
                 $admin = array('id'=>$admin_info['id'],'name'=>$admin_info['name'],'is_super'=>$admin_info['is_super']);
                 Session::set('admin',$admin);
