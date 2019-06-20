@@ -13,3 +13,8 @@
     $new_str = md5($str.md5($str));
     return $new_str;
  }
+
+ //返回信息
+ function return_msg($msg){
+    return '<p style="text-align: center; margin-top: 3em; color: red; font-size: 2.5rem;">'.$msg.'</p>';
+ }

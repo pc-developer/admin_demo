@@ -13,6 +13,7 @@ class Login extends Controller
 
     public function _initialize()
     {
+        parent::_initialize();
         $request = Request::instance();
         $this->ip = $request->ip();
     }
@@ -23,7 +24,7 @@ class Login extends Controller
             $this->redirect('admin/index/index',301);
             exit();
         }
-        
+        session(null);
         $this->redirect('admin/login/login');
         exit();
     }

@@ -71,7 +71,7 @@ class Admin extends Base
         $data['name'] = trim(input('adminName'));
         $data['password'] = trim(input('password'));
         $data['password_confirm'] = trim(input('password2'));
-        $data['mobile'] = intval(trim(input('phone'))) ?: '';
+        $data['mobile'] = trim(input('phone'));
         $data['email'] = trim(input('email'));
         $data['group_id'] = input('group/d');
         $data['is_lock'] = input('is_lock/d',0);
@@ -123,7 +123,7 @@ class Admin extends Base
             }
         }
         //删除
-        if ($act == 'del' && $admin_id) {
+        if (($act == 'del') && $admin_id) {
             $bool = $admin->destroy($admin_id);
             if ($bool) {
                 $result['status'] = 1;

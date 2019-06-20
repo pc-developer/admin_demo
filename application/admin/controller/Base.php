@@ -6,6 +6,7 @@ use think\Controller;
 use think\Db;
 use think\Session;
 use think\Request;
+use think\Cache;
 
 /**
  * 后台公共类
@@ -13,21 +14,25 @@ use think\Request;
 class Base extends Controller
 {
     private $ip = '';
-    public $admin = '';
-    public $id = '';
+    protected $admin = '';
+    protected $id = '';
+    protected $module = '';
+    protected $controller = '';
+    protected $action = '';
 
     public function _initialize()
     {
-        $request = Request::instance();
-        $this->ip = $request->ip();
+        $this->get_request();
         if (!session('?admin')) {
             Session::clear();
+            Cache::clear();
             $this->redirect('admin/login/index');
         }
         $this->id = session('admin.id');
         $last_login_ip = Db::name('admin')->where('id',$this->id)->value('last_login_ip');
         if ($this->ip != $last_login_ip) {
             Session::clear();
+            Cache::clear();
             $this->redirect('admin/login/index');
         }
 
@@ -38,6 +43,16 @@ class Base extends Controller
         
         $this->assign('admin_identity',$this->admin);
         $this->assign('global_menu',$global_menu_list);
+    }
+
+    # 获取请求信息
+    public function get_request()
+    {
+        $request = Request::instance();
+        $this->ip = $request->ip();
+        $this->module = $request->module();
+        $this->controller = $request->controller();
+        $this->action = $request->action();
     }
 
     # 获取菜单

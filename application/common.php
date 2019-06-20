@@ -10,3 +10,15 @@
 // +----------------------------------------------------------------------
 
 // 应用公共文件
+
+
+//密码加密
+function get_password($password){
+    if (!$password) {
+        return $password;
+    }
+
+    $pwd = md5($password).md5($password);
+
+    return $pwd;
+}
