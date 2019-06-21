@@ -77,7 +77,7 @@ class Login extends Controller
                 }
                 
                 Db::name('admin')->where('id',$admin_info['id'])->update(['last_login_ip'=>$this->ip]);
-                $admin = array('id'=>$admin_info['id'],'name'=>$admin_info['name'],'is_super'=>$admin_info['is_super']);
+                $admin = array('id'=>$admin_info['id'],'name'=>$admin_info['name'],'is_super'=>$admin_info['is_super'],'avatar'=>$admin_info['avatar']);
                 Session::set('admin',$admin);
 
                 $result['status'] = 1;

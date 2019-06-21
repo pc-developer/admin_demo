@@ -1,3 +1,19 @@
+<style>
+	#admin_img{
+		height: 44px;
+		width: 44px;
+	}
+	.cl .user_icon{
+		border-radius: 50%;
+	}
+	.cl li img{
+		margin-top: 0px;
+		width: 44px;
+		height: 44px;
+		border-radius: 50%;
+		display: block;
+	}
+</style>
 <header class="navbar-wrapper">
 	<div class="navbar navbar-fixed-top">
 		<div class="container-fluid cl"> <a class="logo navbar-logo f-l mr-10 hidden-xs"
@@ -6,12 +22,17 @@
 				aria-hidden="false" class="nav-toggle Hui-iconfont visible-xs" href="javascript:;">&#xe667;</a>
 			<nav id="Hui-userbar" class="nav navbar-nav navbar-userbar hidden-xs">
 				<ul class="cl">
-					<li>{eq name="$admin_identity.is_super" value="1"}超级管理员{/eq}</li>
+					<li><div class="user_icon" id="admin_img">
+						{empty name="$admin_identity.avatar"}
+							<img src="__ADMIN__/admin_icon.jpg">
+						{else/}
+							<img src="{$admin_identity.avatar}">
+						{/empty}
+					</div></li>
 					<li class="dropDown dropDown_hover"> <a href="#" class="dropDown_A">{$admin_identity.name} <i
 							class="Hui-iconfont">&#xe6d5;</i></a>
 						<ul class="dropDown-menu menu radius box-shadow">
 							<li><a href="#">个人信息</a></li>
-							<li><a href="#">切换账户</a></li>
 							<li><a href="{:url('admin/login/logout')}">退出</a></li>
 						</ul>
 					</li>
