@@ -11,17 +11,49 @@ class User extends Base
     # 会员列表
     public function index()
     {
+        $user_id = input('user_id');
         $user_name = input('user_name/s');
+        $datemin = input('datemin/s');
+        $datemax = input('datemax/s');
+        $sel_time = input('sel_time/d');
+        
         $where['id'] = ['>',0];
 
+        if ($user_id != '') {
+            $where['id'] = $user_id;
+        }
         if ($user_name) {
             $where['nickname|mobile|email'] = ['like',"%$user_name%"];
+        }
+        if ($datemin || $datemax) {
+            if ($datemin && $datemax) {
+                $date = ['between time',[strtotime($datemin),strtotime('+1 day',strtotime($datemax))]];
+            } elseif ($datemin) {
+                $date = ['> time',strtotime($datemin)];
+            } else {
+                $date = [['< time',strtotime('+1 day',strtotime($datemax))],['>',0],'and'];
+            }
+
+            switch ($sel_time) {
+                case 1:
+                    $where['register_time'] = $date;
+                    break;
+                case 2:
+                    $where['last_login_time'] = $date;
+                    break;
+                default:
+                    break;
+            }
         }
 
         $UsersModel = new UsersModel;
         $list = $UsersModel->where($where)->field('id,nickname,sex,mobile,email,status,register_time')->paginate(10);
         
+        $this->assign('user_id',$user_id);
         $this->assign('user_name',$user_name);
+        $this->assign('datemin',$datemin);
+        $this->assign('datemax',$datemax);
+        $this->assign('sel_time',$sel_time);
         $this->assign('list',$list);
 
         return $this->fetch();
