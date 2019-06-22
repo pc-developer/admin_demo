@@ -11,9 +11,42 @@ use app\admin\model\Menu;
 
 class System extends Base
 {
+    private $setting = [];
+
+    public function _initialize()
+    {
+        parent::_initialize();
+
+        $this->setting = array(
+            'web_info'  => ['order'=>0,'url'=>'/admin/system/index','name'=>"网站信息"],
+            'smtp'      => ['order'=>1,'url'=>'/admin/system/smtp','name'=>"邮箱设置"],
+        );
+
+        array_multisort(array_column($this->setting,'order'),SORT_ASC,$this->setting); //order列升序排列
+        
+        $this->assign('list',$this->setting);
+    }
+
+    # 网站设置
     public function index()
     {
-        $this->redirect('/admin/system/menu');
+        $index = input('index/d',0);
+
+        $this->assign('index',$index);
+        $this->assign('inc_type','web_info');
+
+        return $this->fetch();
+    }
+
+    # 邮箱设置
+    public function smtp()
+    {
+        $index = input('index/d',0);
+
+        $this->assign('index',$index);
+        $this->assign('inc_type','smtp');
+
+        return $this->fetch();
     }
     
     # 菜单列表
