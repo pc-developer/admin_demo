@@ -44,6 +44,22 @@ class System extends Base
         return $this->fetch();
     }
 
+    # 邮箱设置
+    public function smtp()
+    {
+        $index = input('index/d',0);
+        $inc_type = 'smtp';
+
+        $temp = $this->get_setting($inc_type);
+        $config = $this->handle_config($temp);
+
+        $this->assign('index',$index);
+        $this->assign('inc_type',$inc_type);
+        $this->assign('config',$config);
+
+        return $this->fetch();
+    }
+
     public function get_setting($inc_type)
     {
         $config = Db::name("config")->where('inc_type',$inc_type)->select();
@@ -113,7 +129,7 @@ class System extends Base
 
         Db::startTrans();   //开启事务
         $bool = false;
-
+        
         foreach ($data as $k3 => $v3) {
             $is_up = false;
             foreach ($config as $k4 => $v4) {
@@ -251,17 +267,6 @@ class System extends Base
         }
 
         return json($result);
-    }
-
-    # 邮箱设置
-    public function smtp()
-    {
-        $index = input('index/d',0);
-
-        $this->assign('index',$index);
-        $this->assign('inc_type','smtp');
-
-        return $this->fetch();
     }
     
     # 菜单列表

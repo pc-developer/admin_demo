@@ -1,6 +1,6 @@
 {include file="system/setting_head"/}
 <div class="page-container">
-    <form class="form form-horizontal" id="form-article-add">
+    <form class="form form-horizontal" id="form-smtp-add">
         <input type="hidden" name="inc_type" value="{$inc_type}">
         <div id="tab-system" class="HuiTab">
             <div class="tabBar cl">
@@ -8,53 +8,219 @@
                     <a href="{$vo.url}?index={$i-1}"><span>{$vo.name}</span></a>
                 {/volist}
             </div>
-            <div class="row cl">
-                <label class="form-label col-xs-4 col-sm-2">邮件发送模式：</label>
-                <div class="formControls col-xs-8 col-sm-9">
-                    <input type="text" class="input-text" value="" id="" name="">
-                </div>
-            </div>
-            <div class="row cl">
-                <label class="form-label col-xs-4 col-sm-2">SMTP服务器：</label>
-                <div class="formControls col-xs-8 col-sm-9">
-                    <input type="text" id="" value="" class="input-text">
-                </div>
-            </div>
-            <div class="row cl">
-                <label class="form-label col-xs-4 col-sm-2">SMTP 端口：</label>
-                <div class="formControls col-xs-8 col-sm-9">
-                    <input type="text" class="input-text" value="25" id="" name="">
-                </div>
-            </div>
-            <div class="row cl">
-                <label class="form-label col-xs-4 col-sm-2">邮箱帐号：</label>
-                <div class="formControls col-xs-8 col-sm-9">
-                    <input type="text" class="input-text" value="5" id="emailName" name="emailName">
-                </div>
-            </div>
-            <div class="row cl">
-                <label class="form-label col-xs-4 col-sm-2">邮箱密码：</label>
-                <div class="formControls col-xs-8 col-sm-9">
-                    <input type="password" id="email-password" value="" class="input-text">
-                </div>
-            </div>
-            <div class="row cl">
-                <label class="form-label col-xs-4 col-sm-2">收件邮箱地址：</label>
-                <div class="formControls col-xs-8 col-sm-9">
-                    <input type="text" id="email-address" value="" class="input-text">
-                </div>
-            </div>
-        </div>
-        <div class="row cl">
-            <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-2">
-                <button onClick="article_save_submit();" class="btn btn-primary radius" type="submit"><i
-                        class="Hui-iconfont">&#xe632;</i> 保存</button>
-                <button onClick="layer_close();" class="btn btn-default radius"
-                    type="button">&nbsp;&nbsp;取消&nbsp;&nbsp;</button>
-            </div>
-        </div>
-    </form>
+            <div>
+				<div class="row cl">
+					<label class="form-label col-xs-4 col-sm-2">
+                        <span class="c-red">*</span>
+                        SMTP服务器：</label>
+					<div class="formControls col-xs-8 col-sm-9"> 
+						<span class="select-box" style="width:150px;">
+							<select class="select" id="host" name="host" size="1">
+								<option value="smtp.qq.com" {if condition="isset($config.host) && $config.host eq 'smtp.qq.com'"}selected{/if}>QQ邮箱</option>
+								<option value="smtp.163.com" {if condition="isset($config.host) && $config.host eq 'smtp.163.com'"}selected{/if} >网易邮箱</option>
+							</select>
+						</span> 
+					</div>
+				</div>
+				<div class="row cl">
+					<label class="form-label col-xs-4 col-sm-2">
+                        <span class="c-red">*</span>
+                        SMTP协议：</label>
+					<div class="formControls col-xs-8 col-sm-9"> 
+						<span class="select-box" style="width:150px;">
+							<select class="select" id="agreement" name="agreement" size="1">
+								<option value="ssl" {if condition="isset($config.agreement) && $config.agreement eq 'ssl'"}selected{/if} >SSL</option>
+								<option value="tls" {if condition="isset($config.agreement) && $config.agreement eq 'tls'"}selected{/if} >TLS</option>
+							</select>
+						</span> 
+					</div>
+				</div>
+				<div class="row cl">
+					<label class="form-label col-xs-4 col-sm-2">
+                        <span class="c-red">*</span>
+                        SMTP 端口：</label>
+					<div class="formControls col-xs-8 col-sm-9">
+						<input type="text" class="input-text" value="{$config.port ?? ''}" id="port" name="port" placeholder="常用端口号：ssl：25、465；tls: 587">
+					</div>
+				</div>
+				<div class="row cl">
+					<label class="form-label col-xs-4 col-sm-2">
+                        <span class="c-red">*</span>
+                        邮箱帐号：</label>
+					<div class="formControls col-xs-8 col-sm-9">
+						<input type="text" class="input-text" value="{$config.username ?? ''}" id="username" name="username" placeholder="@">
+					</div>
+				</div>
+				<div class="row cl">
+					<label class="form-label col-xs-4 col-sm-2">
+                        <span class="c-red">*</span>
+                        邮箱密码或授权码：</label>
+					<div class="formControls col-xs-8 col-sm-9">
+						<input type="password" id="password" name="password" value="{$config.password ?? ''}" class="input-text" placeholder="部分邮箱服务器需要使用授权码">
+					</div>
+				</div>
+				<div class="row cl" style="padding-top:20px;">
+					<label class="form-label col-xs-4 col-sm-2"></label>
+					<div class="formControls col-xs-8 col-sm-9">
+						{literal}
+						    <p style="color:red;">注意：下面邮件模板使用 {{$code}} 代替验证码，必须填写无误，否则用户收不到验证码！</p>
+						{/literal}
+					</div>
+				</div>
+				<div class="row cl">
+					<label class="form-label col-xs-4 col-sm-2">注册-邮件标题：</label> 
+					<div class="formControls col-xs-8 col-sm-9">
+						<input type="text" class="input-text" value="{$config.register_title ?? ''}" id="register_title" name="register_title" >
+					</div>
+				</div>
+				<div class="row cl">
+					<label class="form-label col-xs-4 col-sm-2">
+                        <span class="c-red">*</span>
+                        注册-邮件模板 HTML：</label>
+					<div class="formControls col-xs-8 col-sm-9">
+						<textarea name="register_body" id="register_body" class="textarea"  placeholder="可填写HTML内容的模板" dragonfly="false" onKeyUp="Huitextarealength(this,250)">{$config.register_body ?? ''}</textarea>
+						<p class="textarea-numberbar"><em class="textarea-length">0</em>/250</p>
+					</div>
+				</div>
+				<div class="row cl">
+					<label class="form-label col-xs-4 col-sm-2">注册-邮件模板 文本：</label>
+					<div class="formControls col-xs-8 col-sm-9">
+						<textarea name="register_altbody" id="register_altbody" cols="" rows="" class="textarea"  placeholder="填写文本内容，当HTML模板发送失败时调用" dragonfly="true" onKeyUp="Huitextarealength(this,250)">{$config.register_altbody ?? ''}</textarea>
+						<p class="textarea-numberbar"><em class="textarea-length">0</em>/250</p>
+					</div>
+				</div>
+				<div class="row cl">
+					<label class="form-label col-xs-4 col-sm-2">
+                        重置密码-邮件标题：</label>
+					<div class="formControls col-xs-8 col-sm-9">
+						<input type="text" class="input-text" value="{$config.edit_pass_title ?? ''}" id="edit_pass_title" name="edit_pass_title" >
+					</div>
+				</div>
+				<div class="row cl">
+					<label class="form-label col-xs-4 col-sm-2">
+                        <span class="c-red">*</span>
+                        重置密码-邮件模板 HTML：</label>
+					<div class="formControls col-xs-8 col-sm-9">
+						<textarea name="edit_pass_body" id="edit_pass_body" cols="" rows="" class="textarea"  placeholder="可填写HTML内容的模板" dragonfly="true" onKeyUp="Huitextarealength(this,250)">{$config.edit_pass_body ?? ''}</textarea>
+						<p class="textarea-numberbar"><em class="textarea-length">0</em>/250</p>
+					</div>
+				</div>
+				<div class="row cl">
+					<label class="form-label col-xs-4 col-sm-2">重置密码-邮件模板 文本：</label>
+					<div class="formControls col-xs-8 col-sm-9">
+						<textarea name="edit_pass_altbody" id="edit_pass_altbody" cols="" rows="" class="textarea"  placeholder="填写文本内容，当HTML模板发送失败时调用" dragonfly="true" onKeyUp="Huitextarealength(this,250)">{$config.edit_pass_altbody ?? ''}</textarea>
+						<p class="textarea-numberbar"><em class="textarea-length">0</em>/250</p>
+					</div>
+				</div>
+				<div class="row cl">
+					<label class="form-label col-xs-4 col-sm-2">绑定邮箱-邮件标题：</label>
+					<div class="formControls col-xs-8 col-sm-9">
+						<input type="text" class="input-text" value="{$config.bind_email_title ? $config.bind_email_title : ''}" id="bind_email_title" name="bind_email_title" >
+					</div>
+				</div>
+				<div class="row cl">
+					<label class="form-label col-xs-4 col-sm-2">
+                        <span class="c-red">*</span>
+                        绑定邮箱-邮件模板 HTML：</label>
+					<div class="formControls col-xs-8 col-sm-9">
+						<textarea name="bind_email_body" id="bind_email_body" cols="" rows="" class="textarea"  placeholder="可填写HTML内容的模板" dragonfly="true" onKeyUp="Huitextarealength(this,250)">{$config.bind_email_body ?? ''}</textarea>
+						<p class="textarea-numberbar"><em class="textarea-length">0</em>/250</p>
+					</div>
+				</div>
+				<div class="row cl">
+					<label class="form-label col-xs-4 col-sm-2">绑定邮箱-邮件模板 文本：</label>
+					<div class="formControls col-xs-8 col-sm-9">
+						<textarea name="bind_email_altbody" id="bind_email_altbody" cols="" rows="" class="textarea"  placeholder="填写文本内容，当HTML模板发送失败时调用" dragonfly="true" onKeyUp="Huitextarealength(this,250)">{$config.bind_email_altbody ?? ''}</textarea>
+						<p class="textarea-numberbar"><em class="textarea-length">0</em>/250</p>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row cl">
+			<div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-2">
+                <input class="btn btn-primary radius" type="submit" value="&nbsp;&nbsp;提交&nbsp;&nbsp;">
+				<button onClick="layer_close();" class="btn btn-default radius" type="button">&nbsp;&nbsp;取消&nbsp;&nbsp;</button>
+			</div>
+		</div>
+	</form>
 </div>
 {include file="system/setting_footer"/}
+<script>
+    $(function(){
+        //统计字符串长度
+        $('.textarea-numberbar').each(function(){
+            $(this).children('.textarea-length').text($(this).prev().text().length);
+        });
+        
+        $('#form-smtp-add').validate({
+            rules: {
+                host: {
+                    required: true,
+                },
+                agreement: {
+                    required: true,
+                },
+                port: {
+                    required: true,
+                },
+                username: {
+                    required: true,
+                    email: true,
+                },
+                password: {
+                    required: true,
+                },
+                register_body: {
+                    required: true,
+                },
+                edit_pass_body: {
+                    required: true,
+                },
+                bind_email_body: {
+                    required: true,
+                },
+            },
+            // onkeyup: false,
+            // focusCleanup: true,
+            success: "valid",
+            submitHandler: function (form) {
+                $(form).ajaxSubmit({
+                    type: "POST",
+                    url: "/admin/system/setting_handle",
+                    dataType: "JSON",
+                    success: function(data){
+                        if (data.status == 1) {
+							layer.msg(data.msg, {icon: 6, time: 1500}, function(){
+								location.reload();
+							});
+						} else {
+							layer.msg(data.msg, {icon: 5, time: 1500});
+						}
+                    },
+                    error: function(){
+						layer.alert("系统繁忙！请稍候！",{title:"提示信息"});
+					}
+                });
+            }
+        });
+    });
+    function layer_close(){
+		location.reload();
+	}
+    //限定输入框输入字数
+    function Huitextarealength(obj,all_length){
+        obj.value = substr(obj.value, all_length);
+        $(obj).next().children('.textarea-length').html(obj.value.length);
+    }
+
+    function substr(str, length) {
+        var l = 0, i = 0;
+        while (l < length && i < str.length) {
+            l += 1;
+            i += 1;
+        }
+        return str.substring(0, i);
+    }
+</script>
 </body>
 </html>

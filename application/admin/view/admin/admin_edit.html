@@ -118,8 +118,6 @@
 						equalTo: "#password"
 					},
 					phone: {
-						// required: true,
-						// maxlength: 11,
 						isPhone: true,
 					},
 					email: {
@@ -165,7 +163,6 @@
 
 		//限定输入框输入字数
 		function Huitextarealength(obj,all_length){
-			var note = $(obj).val();
 			obj.value = substr(obj.value, all_length);
 			$('.textarea-length').html(obj.value.length);
 		}

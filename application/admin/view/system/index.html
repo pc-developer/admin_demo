@@ -205,7 +205,7 @@
 			success: "valid",
 			submitHandler: function (form) {
 				$(form).ajaxSubmit({
-					type: 'post',
+					type: "POST",
 					url: "/admin/system/setting_handle",
 					success: function(data){
 						if (data.status == 1) {
@@ -227,6 +227,9 @@
 		$('#hide-form-file').change(function(){
 			$('#hide-form').submit();
 		});
+	}
+	function layer_close(){
+		location.reload();
 	}
 	//上传图片
 	function upload_image(num){
