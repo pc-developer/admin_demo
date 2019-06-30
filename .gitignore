@@ -2,3 +2,4 @@
 /application/database.php
 .vscode
 /public/upload/*
+/public/images/*

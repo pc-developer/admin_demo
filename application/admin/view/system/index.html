@@ -1,6 +1,30 @@
 ﻿{include file="system/setting_head"/}
+<style>
+	.image-add{
+		position: relative;
+		width: 100px;
+		height: 100px;
+	}
+	.image-add>a{
+		text-decoration: none;
+	}
+	.image-add img{
+		width: 100px;
+		height: 100px;
+	}
+	.logo-image a img{
+		display:block;
+		width:100%;
+		height:100%;
+	}
+	.del-up-image{
+		position: relative;
+		left: 120%;
+		top: -100%;
+	}
+</style>
 <div class="page-container">
-	<form class="form form-horizontal" id="form-article-add">
+	<form class="form form-horizontal" id="form-web-info">
 		<input type="hidden" name="inc_type" value="{$inc_type}">
 		<div id="tab-system" class="HuiTab">
 			<div class="tabBar cl">
@@ -8,77 +32,291 @@
 					<a href="{$vo.url}?index={$i-1}"><span>{$vo.name}</span></a>
 				{/volist}
 			</div>
-			<div class="tabCon">
-				<div class="row cl">
-					<label class="form-label col-xs-4 col-sm-2">
-						<span class="c-red">*</span>
-						网站名称：</label>
-					<div class="formControls col-xs-8 col-sm-9">
-						<input type="text" id="website-title" placeholder="控制在25个字、50个字节以内" value="" class="input-text">
-					</div>
+			<div class="row cl">
+				<label class="form-label col-xs-4 col-sm-2">
+					<span class="c-red">*</span>
+					网站名称：</label>
+				<div class="formControls col-xs-8 col-sm-9">
+					<input type="text" id="website-web_name" placeholder="控制在25个字、50个字节以内" value="{$config.web_name ?? '' //如果有设置$config.web_name则输出,否则为空}" class="input-text" name="web_name">
 				</div>
-				<div class="row cl">
-					<label class="form-label col-xs-4 col-sm-2">
-						<span class="c-red">*</span>
-						关键词：</label>
-					<div class="formControls col-xs-8 col-sm-9">
-						<input type="text" id="website-Keywords" placeholder="5个左右,8汉字以内,用英文,隔开" value="" class="input-text">
-					</div>
+			</div>
+			<div class="row cl">
+				<label class="form-label col-xs-4 col-sm-2">备案号：</label>
+				<div class="formControls col-xs-8 col-sm-9">
+					<input type="text" id="website-icp" placeholder="京ICP备00000000号" value="{$config.icp ?? ''}" class="input-text" name="icp">
 				</div>
-				<div class="row cl">
-					<label class="form-label col-xs-4 col-sm-2">
-						<span class="c-red">*</span>
-						描述：</label>
-					<div class="formControls col-xs-8 col-sm-9">
-						<input type="text" id="website-description" placeholder="空制在80个汉字，160个字符以内" value="" class="input-text">
-					</div>
+			</div>
+			<div class="row cl">
+				<label class="form-label col-xs-4 col-sm-2">
+					<span class="c-red">*</span>
+					网站Logo：</label>
+				<div class="formControls col-xs-8 col-sm-9 image-add" id="logo-image-1">
+					{empty name="$config.web_logo"}
+						<a onclick="upload_image(1);" id="add-web_logo-1" title="上传图片">
+							<img src="__ADMIN__/upload_default_image.jpg" alt="上传图片">
+						</a>
+					{else/}
+						<a id="add-web_logo-1">
+							<input type="hidden" id="website-web_logo-1" placeholder="" value="{$config.web_logo ?? ''}" class="input-text" name="web_logo">
+							<img src="{$config.web_logo ?? ''}" alt="Logo">
+							<i class="Hui-iconfont del-up-image" onclick="del_up_image(this,1,'{$config.web_logo ?? \'\'}')">&#xe6e2;</i>
+						</a>
+					{/empty}
 				</div>
-				<div class="row cl">
-					<label class="form-label col-xs-4 col-sm-2">
-						<span class="c-red">*</span>
-						css、js、images路径配置：</label>
-					<div class="formControls col-xs-8 col-sm-9">
-						<input type="text" id="website-static" placeholder="默认为空，为相对路径" value="" class="input-text">
-					</div>
+			</div>
+			<div class="row cl">
+				<label class="form-label col-xs-4 col-sm-2">
+					<span class="c-red">*</span>
+					底部版权信息：</label>
+				<div class="formControls col-xs-8 col-sm-9">
+					<input type="text" id="website-copyright" name="copyright" placeholder="&copy; 2016" value="{$config.copyright ?? ''}" class="input-text">
 				</div>
-				<div class="row cl">
-					<label class="form-label col-xs-4 col-sm-2">
-						<span class="c-red">*</span>
-						上传目录配置：</label>
-					<div class="formControls col-xs-8 col-sm-9">
-						<input type="text" id="website-uploadfile" placeholder="默认为uploadfile" value="" class="input-text">
-					</div>
+			</div>
+			<div class="row cl">
+				<label class="form-label col-xs-4 col-sm-2">
+					<span class="c-red">*</span>
+					网站标题：</label>
+				<div class="formControls col-xs-8 col-sm-9">
+					<input type="text" id="website-web_title" name="web_title" value="{$config.web_title ?? ''}" class="input-text">
 				</div>
-				<div class="row cl">
-					<label class="form-label col-xs-4 col-sm-2">
-						<span class="c-red">*</span>
-						底部版权信息：</label>
-					<div class="formControls col-xs-8 col-sm-9">
-						<input type="text" id="website-copyright" placeholder="&copy; 2016 H-ui.net" value="" class="input-text">
-					</div>
+			</div>
+			<div class="row cl">
+				<label class="form-label col-xs-4 col-sm-2">
+					<span class="c-red">*</span>
+					网站标题图标：</label>
+				<div class="formControls col-xs-8 col-sm-9 image-add" id="logo-image-2">
+					{empty name="$config.web_logo"}
+						<a onclick="upload_image(2);" id="add-web_logo-2" title="上传图片">
+							<img src="__ADMIN__/upload_default_image.jpg" alt="上传图片">
+						</a>
+					{else/}
+						<a id="add-web_logo-2">
+							<input type="hidden" id="website-web_title_logo-2" placeholder="" value="{$config.web_title_logo ?? ''}" class="input-text" name="web_title_logo">
+							<img src="{$config.web_title_logo ?? ''}" alt="Logo">
+							<i class="Hui-iconfont del-up-image" onclick="del_up_image(this,2,'{$config.web_title_logo ?? \'\'}')">&#xe6e2;</i>
+						</a>
+					{/empty}
 				</div>
-				<div class="row cl">
-					<label class="form-label col-xs-4 col-sm-2">备案号：</label>
-					<div class="formControls col-xs-8 col-sm-9">
-						<input type="text" id="website-icp" placeholder="京ICP备00000000号" value="" class="input-text">
-					</div>
+			</div>
+			<div class="row cl">
+				<label class="form-label col-xs-4 col-sm-2">
+					<span class="c-red">*</span>
+					关键词：</label>
+				<div class="formControls col-xs-8 col-sm-9">
+					<input type="text" id="website-web_key_words" placeholder="5个左右,8汉字以内,用英文,隔开"
+						value="{$config.web_key_words ?? ''}" class="input-text" name="web_key_words">
 				</div>
-				<div class="row cl">
-					<label class="form-label col-xs-4 col-sm-2">统计代码：</label>
-					<div class="formControls col-xs-8 col-sm-9">
-						<textarea class="textarea"></textarea>
-					</div>
+			</div>
+			<div class="row cl">
+				<label class="form-label col-xs-4 col-sm-2">
+					<span class="c-red">*</span>
+					描述：</label>
+				<div class="formControls col-xs-8 col-sm-9">
+					<input type="text" id="website-web_desc" name="web_desc" placeholder="空制在80个汉字，160个字符以内"
+						value="{$config.web_desc ?? ''}" class="input-text">
+				</div>
+			</div>
+			<div class="row cl">
+				<label class="form-label col-xs-4 col-sm-2">
+					<span class="c-red">*</span>
+					联系人：</label>
+				<div class="formControls col-xs-8 col-sm-9">
+					<input type="text" id="website-linkman" name="linkman" value="{$config.linkman ?? ''}" class="input-text">
+				</div>
+			</div>
+			<div class="row cl">
+				<label class="form-label col-xs-4 col-sm-2">
+					<span class="c-red">*</span>
+					联系电话：</label>
+				<div class="formControls col-xs-8 col-sm-9">
+					<input type="text" id="website-phone" name="phone" value="{$config.phone ?? ''}" class="input-text">
+				</div>
+			</div>
+			<div class="row cl">
+				<label class="form-label col-xs-4 col-sm-2">
+					联系手机：</label>
+				<div class="formControls col-xs-8 col-sm-9">
+					<input type="text" id="website-mobile" name="mobile" value="{$config.mobile ?? ''}" class="input-text">
+				</div>
+			</div>
+			<div class="row cl">
+				<label class="form-label col-xs-4 col-sm-2">
+					<span class="c-red">*</span>
+					客服电话：</label>
+				<div class="formControls col-xs-8 col-sm-9">
+					<input type="text" id="website-service_tel" name="service_tel" value="{$config.service_tel ?? ''}"
+						class="input-text">
 				</div>
 			</div>
 		</div>
 		<div class="row cl">
 			<div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-2">
-				<button onClick="article_save_submit();" class="btn btn-primary radius" type="submit"><i class="Hui-iconfont">&#xe632;</i> 保存</button>
+				<input class="btn btn-primary radius" type="submit" value="&nbsp;&nbsp;提交&nbsp;&nbsp;">
 				<button onClick="layer_close();" class="btn btn-default radius" type="button">&nbsp;&nbsp;取消&nbsp;&nbsp;</button>
 			</div>
 		</div>
 	</form>
 </div>
+<form id="hide-form" style="display:none;" target="ajaxR" enctype="multipart/form-data" method="POST" action="/admin/system/upload_images">
+	<input id="hide-form-file" type="file" name="image" value="" >
+	<input id="logo-flag" type="hidden" value="">
+	<input type="text" name="module" value="setting" >
+</form>
+<iframe name="ajaxR" style="display:none;"></iframe>
 {include file="system/setting_footer"/}
+<script>
+	var img_name = new Array();
+	img_name[1] = 'web_logo';
+	img_name[2] = 'web_title_logo';
+
+	$(function () {
+		$("#form-web-info").validate({
+			rules: {
+				web_name: {
+					required: true,
+				},
+				copyright: {
+					required: true,
+				},
+				web_title: {
+					required: true,
+				},
+				web_key_words: {
+					required: true,
+				},
+				web_desc: {
+					required: true,
+				},
+				linkman: {
+					required: true,
+				},
+				phone: {
+					required: true,
+				},
+				mobile: {
+					isPhone: true,
+				},
+				service_tel: {
+					required: true,
+				},
+			},
+			onkeyup: false,
+			focusCleanup: true,
+			success: "valid",
+			submitHandler: function (form) {
+				$(form).ajaxSubmit({
+					type: 'post',
+					url: "/admin/system/setting_handle",
+					success: function(data){
+						if (data.status == 1) {
+							layer.msg(data.msg, {icon: 6, time: 1500}, function(){
+								location.reload();
+							});
+						} else {
+							layer.msg(data.msg, {icon: 5, time: 1500});
+						}
+					},
+					error: function(){
+						layer.alert("系统繁忙！请稍候！",{title:"提示信息"});
+					}
+				});
+			}
+		});
+	});
+	window.onload = function() {
+		$('#hide-form-file').change(function(){
+			$('#hide-form').submit();
+		});
+	}
+	//上传图片
+	function upload_image(num){
+		var str = '#logo-image-' + num + ' > a';
+		var size = $(str).size();
+        if(size > 1){
+            layer.msg('最多只能有一张图片！');
+            return false;
+        }
+		
+		$('#logo-flag').val(num);
+		$('#hide-form-file').val('');
+        $('#hide-form-file').click();
+	}
+	// 表单提交回调
+	function form_callback(status,msg=''){
+		if(status == 1){
+			msg = msg ? msg : '保存成功，正在刷新...';
+			layer.msg(msg,{icon:6});
+			setTimeout(function(){
+				window.location.replace(location.href);
+			},1500);
+		}else{
+			msg = msg ? msg : '设置保存失败，请重试！';
+			layer.msg(msg,{icon:5});
+		}
+	}
+	function iframe_images_callback(status,src='',image=''){
+        if(status == 1){
+			var flag = $('#logo-flag').val();
+			var name = img_name[flag];
+
+            var _html = ''+
+                '<a id="add-web_logo-'+flag+'">'+
+					'<input type="hidden" id="website-' + name + '" name="' + name + '" value="'+image+'" class="input-text">'+
+                    '<img class="ex-image"  onclick="upload_image('+flag+');" src="' + src + '" alt="Logo"/>'+
+                    '<i class="Hui-iconfont del-up-image" onclick="del_up_image(this,' + flag + ',\'' + image + '\')">&#xe6e2;</i>'+
+                '</a>';
+			var str1 = '#add-web_logo-' + flag;
+			var str2 = '#logo-image-' + flag;
+			
+			$(str1).remove();
+			$(str2).append(_html);
+        }else{
+            layer.msg('图片添加失败！');
+        }
+    }
+	// 删除图片
+	function del_up_image(obj,num,img){
+		layer.confirm('确认要删除图片么？', {icon: 3, title:'提示'}, function(index){
+			var str1 = '#logo-image-' + num;
+			var str2 = '#add-web_logo-' + num;
+			var str_logo = str1 +  ' > a';
+			var str3 = str1 + ' ' + str2;
+			var size = $(str_logo).size();
+			var type = "{$inc_type}";
+			var name = img_name[num];
+			
+            if(size > 0){
+                if($(str3).length > 0) {
+					$.ajax({
+						type: "post",
+						url: "/admin/system/del_img",
+						data: {'img':img,'inc_type':type,'name':name},
+						success: function(data){
+							if (data.status == 1) {
+								layer.msg('删除成功！', {icon: 1, time: 1000});
+
+								var html = '<a onclick="upload_image(' + num + ');" id="add-web_logo-' + num + '" title="上传图片">'+
+								'<img src="__ADMIN__/upload_default_image.jpg" alt="上传图片">'+
+								'</a>'
+								$(str2).remove();
+								$(str1).append(html);
+							} else {
+								layer.msg('删除失败！', {icon: 2, time: 1000});
+							}
+						},
+						error: function(){
+							layer.alert("系统繁忙，请稍等！");
+						}
+					});
+                } else {
+					layer.msg('删除失败！', {icon: 2, time: 1000});
+				}
+            } else {
+				layer.msg('删除失败！', {icon: 2, time: 1000});
+			}
+            layer.close(index);
+		});
+	}
+</script>
 </body>
 </html>
