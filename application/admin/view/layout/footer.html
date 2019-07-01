@@ -8,6 +8,35 @@
 <script type="text/javascript" src="__ADMIN__/lib/jquery.contextmenu/jquery.contextmenu.r2.js"></script>
 <script type="text/javascript">
 $(function(){
+	//皮肤
+	var skin = '{$skin.value ?? "000"}';
+	skin = '#'+skin;
+	var admin_skin = '{$skin.name ?? "admin_skin"}';
+	var inc_type = '{$skin.inc_type ?? "base"}';
+
+	$('#Hui-skin .dropDown-menu li a').click(function(){
+		skin = $(this).data('val');
+		
+		$.ajax({
+			type: "POST",
+			url: "/admin/system/skin",
+			data: {skin:skin,inc_type:inc_type,name:admin_skin},
+			success: function(data){
+				if (data.status == 1) {
+					layer.msg(data.msg);
+					skin = '#'+skin;
+					$('.navbar').css('background',skin);
+				} else {
+					layer.msg("皮肤更换失败！");
+				}
+			},
+			error: function(){
+				layer.msg("皮肤更换失败！");
+			}
+		});
+	});
+	$('.navbar').css('background',skin);
+	
 	/*$("#min_title_list li").contextMenu('Huiadminmenu', {
 		bindings: {
 			'closethis': function(t) {

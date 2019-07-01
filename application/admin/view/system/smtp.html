@@ -40,7 +40,7 @@
                         <span class="c-red">*</span>
                         SMTP 端口：</label>
 					<div class="formControls col-xs-8 col-sm-9">
-						<input type="text" class="input-text" value="{$config.port ?? ''}" id="port" name="port" placeholder="常用端口号：ssl：25、465；tls: 587">
+						<input type="text" class="input-text" value="{$config.port ?? '' //如果有设置$config.port则输出,否则为空}" id="port" name="port" placeholder="常用端口号：ssl：25、465；tls: 587">
 					</div>
 				</div>
 				<div class="row cl">

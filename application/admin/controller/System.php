@@ -19,8 +19,9 @@ class System extends Base
         parent::_initialize();
 
         $this->setting = array(
-            'web_info'  => ['order'=>0,'url'=>'/admin/system/index','name'=>"网站信息"],
-            'smtp'      => ['order'=>1,'url'=>'/admin/system/smtp','name'=>"邮箱设置"],
+            'base'      => ['order'=>0,'url'=>'/admin/system/index','name'=>"基本设置"],
+            'web_info'  => ['order'=>1,'url'=>'/admin/system/web_info','name'=>"网站信息"],
+            'smtp'      => ['order'=>2,'url'=>'/admin/system/smtp','name'=>"邮箱设置"],
         );
 
         array_multisort(array_column($this->setting,'order'),SORT_ASC,$this->setting); //order列升序排列
@@ -28,8 +29,24 @@ class System extends Base
         $this->assign('list',$this->setting);
     }
 
-    # 网站设置
+    # 基本设置
     public function index()
+    {
+        $index = input('index/d',0);
+        $inc_type = 'base';
+        
+        $temp = $this->get_setting($inc_type);
+        $config = $this->handle_config($temp);
+
+        $this->assign('index',$index);
+        $this->assign('inc_type',$inc_type);
+        $this->assign('config',$config);
+
+        return $this->fetch();
+    }
+
+    # 网站设置
+    public function web_info()
     {
         $index = input('index/d',0);
         $inc_type = 'web_info';
@@ -422,6 +439,39 @@ class System extends Base
             }
         }
         
+        return json($result);
+    }
+
+    # 皮肤
+    public function skin()
+    {
+        $skin = input('skin/s','default');
+        $inc_type = input('inc_type/s');
+        $name = input('name/s');
+
+        $result = array('status'=>0,'msg'=>"参数错误！");
+        $admin_id = $this->id;
+        $is_super = Db::name('admin')->where('id',$admin_id)->value('is_super');
+        if ($is_super == 1) {
+            if ($inc_type && $name) {
+                $bool = false;
+                $where = ['inc_type'=>$inc_type,'name'=>$name];
+                $config = Db::name('config')->where($where)->find();
+                if ($config) {
+                    $bool = Db::name('config')->where($where)->update(['value'=>$skin]);
+                } else {
+                    $bool = Db::name('config')->insert(['name'=>$name,'value'=>$skin,'inc_type'=>$inc_type]);
+                }
+                if ($bool) {
+                    $result['status'] = 1;
+                    $result['msg'] = "皮肤更换成功！";
+                }
+            }
+        } else {
+            $result['status'] = 1;
+            $result['msg'] = "你不是超级管理员，下次登录将恢复默认状态！";
+        }
+
         return json($result);
     }
 }
