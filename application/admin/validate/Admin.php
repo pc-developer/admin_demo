@@ -29,12 +29,15 @@ class Admin extends Validate
     ];
 
     protected $scene = [
-        'edit' => [
+        'edit'      => [
             'name'      => 'require|alphaDash|length:4,16|unique:admin,name^id',
             'password'  => 'length:6,20|confirm',
             'mobile',
             'email',
             'note',
+        ],
+        'password'  => [
+            'password'  => 'require|length:6,20|confirm',
         ],
     ];
 }
