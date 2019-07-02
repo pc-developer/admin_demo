@@ -51,7 +51,7 @@ class Admin extends Base
         $act = input('act/s');
         
         if ($admin_id <= 0) {
-            return '<p style="text-align: center; margin-top: 3em; color: red; font-size: 2.5rem;">找不到该管理员的信息</p>';
+            return return_msg("找不到该管理员的信息");
         }
 
         $admin_info = Db::name('admin')->where('id',$admin_id)->find();

@@ -1,0 +1,76 @@
+{include file="layout/head"/}
+<body>
+<div class="cl pd-20" style=" background-color:#5bacb6">
+    {empty name="$admin_info.avatar"}
+        <img class="avatar size-XL l" src="__ADMIN__/admin_icon.ico">
+    {else/}
+        <img class="avatar size-XL l" src="{$admin_info.avatar}">
+    {/empty}
+	<dl style="margin-left:80px; color:#fff">
+		<dt>
+			<span class="f-18">{$admin_info.name}</span>
+		</dt>
+		<dd class="pt-10 f-12" style="margin-left:0">无法评估，就无法管理</dd>
+	</dl>
+</div>
+<div class="pd-20">
+	<table class="table">
+		<tbody>
+			<tr>
+				<th class="text-r">手机：</th>
+				<td>{$admin_info.mobile}</td>
+			</tr>
+			<tr>
+				<th class="text-r">邮箱：</th>
+				<td>{$admin_info.email}</td>
+			</tr>
+			<tr>
+				<th class="text-r">状态：</th>
+				<td class="td-status">
+					{eq name="$admin_info.is_lock" value="0"}
+						<span class="label label-success radius">已启用</span>
+					{else/}
+						<span class="label label-default radius">已禁用</span>
+					{/eq}
+				</td>
+			</tr>
+			<tr>
+				<th class="text-r">超级管理员：</th>
+				<td class="td-status">
+					{eq name="$admin_info.is_super" value="1"}
+						<span class="label label-success radius">是</span>
+					{else/}
+						<span class="label label-default radius">否</span>
+					{/eq}
+				</td>
+			</tr>
+			<tr>
+				<th class="text-r">分组：</th>
+				<td>{$group[$admin_info.group_id] ?: '--'}</td>
+			</tr>
+			<tr>
+				<th class="text-r">加入时间：</th>
+				<td>{$admin_info.create_time|date="Y-m-d H:i:s",### ?: '--'}</td>
+			</tr>
+			<tr>
+				<th class="text-r">更改时间：</th>
+				<td>{$admin_info.update_time|date="Y-m-d H:i:s",### ?: '--'}</td>
+			</tr>
+			<tr>
+				<th class="text-r">最后登录IP：</th>
+				<td>{$admin_info.last_login_ip ?: '--'}</td>
+			</tr>
+			<tr>
+				<th class="text-r">备注：</th>
+				<td>{$admin_info.note ?: '--'}</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+<!--_footer 作为公共模版分离出去-->
+{include file="layout/footer"/}
+<!--/_footer 作为公共模版分离出去-->
+
+<!--请在下方写此页面业务相关的脚本-->
+</body>
+</html>

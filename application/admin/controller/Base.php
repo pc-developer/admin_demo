@@ -39,10 +39,9 @@ class Base extends Controller
         $this->admin = session('admin');
         session('admin_id',$this->id);
 
-        $skin = $this->get_skin();
+        $this->get_skin();
         $global_menu_list = $this->get_menu();
         
-        $this->assign('skin',$skin);
         $this->assign('admin_identity',$this->admin);
         $this->assign('global_menu',$global_menu_list);
     }
@@ -51,7 +50,7 @@ class Base extends Controller
     public function get_skin()
     {
         $skin = Db::name('config')->where(['name'=>'admin_skin','inc_type'=>'base'])->field('name,value,inc_type')->find();
-        return $skin;
+        $this->assign('skin',$skin);
     }
 
     # 获取请求信息
