@@ -5,6 +5,7 @@ namespace app\admin\controller;
 use think\Db;
 use app\admin\model\Menu;
 use think\Loader;
+use think\Cookie;
 
 /**
  * 系统设置类
@@ -175,6 +176,9 @@ class System extends Base
         }
         
         if ($bool) {
+            if ($inc_type == 'web_info') {
+                parent::get_web_info(); //调用父类方法
+            }
             if (isset($img_path['del'])) {
                 foreach ($img_path['del'] as $k5 => $v5) {
                     @unlink($file_dir.$v5);

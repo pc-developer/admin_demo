@@ -7,6 +7,7 @@ use think\Db;
 use think\Session;
 use think\Request;
 use think\Cache;
+use think\Cookie;
 
 /**
  * 后台公共类
@@ -38,7 +39,10 @@ class Base extends Controller
 
         $this->admin = session('admin');
         session('admin_id',$this->id);
-
+        
+        if (!Cookie::has('web_info')) {
+            $this->get_web_info();
+        }
         $this->get_skin();
         $global_menu_list = $this->get_menu();
         
@@ -78,5 +82,13 @@ class Base extends Controller
             }
         }
         return $global_menu_list;
+    }
+
+    # 网站信息
+    public function get_web_info()
+    {
+        $info = Db::name('config')->where(['inc_type'=>'web_info'])->column('name,value');
+        
+        Cookie::set('web_info',$info,3600);
     }
 }
