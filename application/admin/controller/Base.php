@@ -23,6 +23,9 @@ class Base extends Controller
 
     public function _initialize()
     {
+        if (!Cookie::has('web_info')) {
+            $this->get_web_info();
+        }
         $this->get_request();
         if (!session('?admin')) {
             Session::clear();
@@ -40,9 +43,6 @@ class Base extends Controller
         $this->admin = session('admin');
         session('admin_id',$this->id);
         
-        if (!Cookie::has('web_info')) {
-            $this->get_web_info();
-        }
         $this->get_skin();
         $global_menu_list = $this->get_menu();
         

@@ -51,7 +51,11 @@
       </form>
     </div>
   </div>
-  <div class="footer">Copyright 你的公司名称 by H-ui.admin v3.1</div>
+  <div class="footer">Copyright
+    {if condition="$Think.cookie.web_info"}
+      &nbsp;{$Think.cookie.web_info["copyright"]} &nbsp;by &nbsp;{$Think.cookie.web_info["web_name"]}
+    {/if}
+  </div>
   {include file="layout/footer"/}
   <script>
     //按enter执行
