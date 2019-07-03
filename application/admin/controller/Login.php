@@ -25,13 +25,7 @@ class Login extends Controller
             exit();
         }
         session(null);
-        $this->redirect('admin/login/login');
-        exit();
-    }
-
-    public function login()
-    {
-        return $this->fetch();
+        return $this->fetch('login');
     }
 
     //登陆验证
