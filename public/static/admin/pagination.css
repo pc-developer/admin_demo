@@ -1,0 +1,28 @@
+
+/**
+* 分页
+**/
+
+.pagination {
+	position: absolute;
+	margin-top: 20px;
+	right: 20px;
+}
+.pagination li {
+	display: inline-block;
+	margin-right: 2px;
+	padding: 5px;
+	border: 1px solid #e2e2e2;
+	min-width: 20px;
+	text-align: center;
+	border-radius: 5px;
+}
+.pagination li.active {
+	background: #009688;
+	color: #fff;
+	border: 1px solid #009688;
+}
+.pagination li a {
+	display: block;
+	text-align: center;
+}

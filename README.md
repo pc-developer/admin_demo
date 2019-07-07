@@ -1,4 +1,4 @@
-ThinkPHP 5.0 + H-ui 3.3.1
+ThinkPHP 5.0 + H-ui 3.1.3
 ===============
 
 [![Total Downloads](https://poser.pugx.org/topthink/think/downloads)](https://packagist.org/packages/topthink/think)
